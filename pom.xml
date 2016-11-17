@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>biz.netcentric.seredkin</groupId>
+    <artifactId>template-processor</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>template-processor</name>
+    <description>Demo project for Spring Boot</description>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>1.4.1.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>win</id>
+            <activation>
+                <os>
+                    <name>Windows</name>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <artifactId>j2v8_win32_x86_64</artifactId>
+                    <version>4.6.0</version>
+                </dependency>
+
+            </dependencies>
+        </profile>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <name>MacOS</name>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <artifactId>j2v8_macosx_x86_64</artifactId>
+                    <version>4.6.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+        <profile>
+            <id>linux</id>
+            <activation>
+                <os>
+                    <name>Linux</name>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>com.eclipsesource.j2v8</groupId>
+                    <artifactId>j2v8_linux_x86_64</artifactId>
+                    <version>4.6.0</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
+
+
+    <dependencies>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-tomcat</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-htmlunit-driver</artifactId>
+            <version>2.52.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
+        </plugins>
+    </build>
+
+
+</project>
