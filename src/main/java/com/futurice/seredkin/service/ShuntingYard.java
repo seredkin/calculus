@@ -1,9 +1,15 @@
 package com.futurice.seredkin.service;
 
+import com.futurice.seredkin.data.CalculusException;
+import com.futurice.seredkin.data.Operators;
+import org.apache.commons.lang3.math.NumberUtils;
+
+import java.math.BigDecimal;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
+
 
 public class ShuntingYard {
 
@@ -43,6 +49,25 @@ public class ShuntingYard {
             output.append(stack.pop()).append(' ');
 
         return output.toString().trim();
+    }
+
+    public static BigDecimal calcStack(String postfix) {
+        Deque<BigDecimal> stack = new LinkedList<>();
+        for (String s : postfix.split("\\s")) {
+            final com.futurice.seredkin.data.Operator<BigDecimal> operator = Operators.ALL.get(s);
+            if (operator == null) {
+                if (NumberUtils.isNumber(s))
+                    stack.push(new BigDecimal(NumberUtils.toDouble(s)));
+                else
+                    throw new CalculusException("Unknown literal: " + s);
+            } else if (operator.getFunction() != null) {
+                final BigDecimal right = stack.pop();
+                final BigDecimal left = stack.pop();
+                stack.push((operator.getFunction().apply(left, right)));
+            } else
+                throw new CalculusException("Operator without a defined function: " + s);
+        }
+        return stack.pop();
     }
 
     private enum Operator {

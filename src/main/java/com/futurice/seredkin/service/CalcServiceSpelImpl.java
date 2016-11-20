@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
-@Service("calcSpel")
+@Service(CalcService.CALC_SPEL)
 public class CalcServiceSpelImpl implements CalcService {
 
     @Override public BigDecimal evaluateExpression(String ex) {

@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 /**
  * Created by Anton on 17.11.2016.
  */
-@Service("calcShuntYard") @Primary @Slf4j
+@Service(CalcService.CALC_SHUNT_YARD) @Primary @Slf4j
 public class CalcServiceShuntYardImpl implements CalcService {
 
     public static String formatExpression(String ex) {
@@ -21,14 +21,16 @@ public class CalcServiceShuntYardImpl implements CalcService {
         return ex;
     }
 
-    @Override public BigDecimal evaluateExpression(String ex) {
+    @Override public BigDecimal evaluateExpression(String infix) {
 
         //string reformat
-        ex = formatExpression(ex);
-        String postEx; //= infixToPostfix(ex);
-        log.info("Postfix string:\t" + ex);
+        infix = formatExpression(infix);
+        infix = CalcServiceShuntYardImpl.formatExpression(infix); //= infixToPostfix(ex);
+        final String postfix = ShuntingYard.toPostfix(infix);
 
-        return new BigDecimal(0);
+        log.debug("Postfix string:\t" + infix);
+
+        return ShuntingYard.calcStack(postfix);
     }
 
 }

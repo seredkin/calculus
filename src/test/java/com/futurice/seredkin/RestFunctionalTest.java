@@ -79,7 +79,7 @@ public class RestFunctionalTest {
         assertNotNull(result.getMessage());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void nullExpr() {
         final CalcService calcService = wac.getBean(CalcService.class);
         assertNull(calcService.evaluateExpression(null));

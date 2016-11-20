@@ -1,6 +1,7 @@
 package com.futurice.seredkin;
 
 import lombok.extern.log4j.Log4j;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +11,12 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.Base64Utils;
 import org.springframework.util.StopWatch;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.LongAdder;
@@ -30,6 +34,8 @@ public class SimplePerformanceTest {
 
     private MockMvc mockMvc;
 
+    private List<Pair<String, String>> testData;
+
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
@@ -38,11 +44,12 @@ public class SimplePerformanceTest {
     @Test
     public void performanceTest() throws Exception {
         int threads = 20;
-        int samples = 100;
+        int samples = 10000;
         int desiredFPS = 50;
         long timeOutSec = (long)samples*threads/desiredFPS;
         final LongAdder counter = new LongAdder();
         CompletableFuture[] parallel = new CompletableFuture[threads];
+        testData = new ArrayList<>(CalculusTest.genTestData());
         for (int i = 0; i < threads; i++) {
             CompletableFuture<Integer> sequential = CompletableFuture.supplyAsync(() -> execFunction(counter));
             for (int j = 0; j < samples; j++) {
@@ -62,8 +69,10 @@ public class SimplePerformanceTest {
     private Integer execFunction(LongAdder counter) {
         counter.add(1);
         int i = counter.intValue()%4+1;
+        String infix = testData.get(i % testData.size()).getLeft();
+        String base64 = Base64Utils.encodeToUrlSafeString(infix.getBytes());
         try {
-            String body = mockMvc.perform(get("//calculus?query=" + i).accept(MediaType.APPLICATION_JSON))
+            String body = mockMvc.perform(get("/calculus?query=" + base64).accept(MediaType.APPLICATION_JSON))
                     .andExpect(status().isOk()).andReturn().getResponse().getContentAsString();
             assertTrue(body.contains("result"));
         } catch (Exception e) {
