@@ -6,13 +6,12 @@ import org.springframework.expression.spel.SpelParseException;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.stereotype.Service;
 
-import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
-@Service("calcSpring")
-public class CalcServiceSpringImpl implements CalcService {
+@Service("calcSpel")
+public class CalcServiceSpelImpl implements CalcService {
 
-    @Override public BigDecimal evaluateExpression(@NotNull String ex) {
+    @Override public BigDecimal evaluateExpression(String ex) {
         ExpressionParser parser = new SpelExpressionParser();
         try {
             return parser.parseExpression(ex).getValue(BigDecimal.class);

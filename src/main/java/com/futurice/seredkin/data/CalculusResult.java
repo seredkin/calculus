@@ -5,9 +5,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 
-/**
- * Created by Anton on 17.11.2016.
- */
 @Data @NoArgsConstructor
 public class CalculusResult {
 

@@ -24,8 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** This suite achieves 100% overage on all classes and methods except the TemplateApplication.main*/
-
 /*An example calculus query:
 
     Original query: 2 * (23/(3*3))- 23 * (2*3)
@@ -43,12 +41,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
     Supported operations: + - * / ( )*/
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
-public class SimpleFunctionalTest {
+public class RestFunctionalTest {
 
     @Autowired
     private WebApplicationContext wac;
 
-	private MockMvc mockMvc;
+    private MockMvc mockMvc;
     private ObjectMapper mapper;
 
     @Before
@@ -57,30 +55,32 @@ public class SimpleFunctionalTest {
         this.mapper = new ObjectMapper();
     }
 
-	@Test
-	public void originalExpr() throws Exception {
+    @Test
+    public void originalExpr() throws Exception {
         String ex = "2 * (23.0/(3*3))- 23 * (2*3)";
-            String body = this.mockMvc.perform(get("/calculus?query=" + Base64Utils.encodeToUrlSafeString(ex.getBytes())).accept(MediaType.APPLICATION_JSON))
-                    .andDo(print())
-                    .andExpect(status().isOk())
-                    .andReturn().getResponse().getContentAsString();
+        String body = this.mockMvc.perform(get("/calculus?query=" + Base64Utils.encodeToUrlSafeString(ex.getBytes())).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
         final CalculusResult result = mapper.readerFor(CalculusResult.class).readValue(body);
-        assertEquals(result.getResult().setScale(14, BigDecimal.ROUND_UP), new BigDecimal(-132.88888888888889).setScale(14, BigDecimal.ROUND_UP));//
+        final BigDecimal scaledResult = result.getResult().setScale(14, BigDecimal.ROUND_UP);
+        final BigDecimal expectedResult = new BigDecimal(-132.88888888888889).setScale(14, BigDecimal.ROUND_UP);
+        assertEquals(expectedResult, scaledResult);//
     }
 
-	@Test
-	public void faultyExpr() throws Exception {
+    @Test
+    public void faultyExpr() throws Exception {
         String ex = "2 * (23/(3*3))- 23 * (2*3";
-            String body = this.mockMvc.perform(get("/calculus?query=" + Base64Utils.encodeToUrlSafeString(ex.getBytes())).accept(MediaType.APPLICATION_JSON))
-                    .andDo(print())
-                    .andExpect(status().isBadRequest())
-                    .andReturn().getResponse().getContentAsString();
+        String body = this.mockMvc.perform(get("/calculus?query=" + Base64Utils.encodeToUrlSafeString(ex.getBytes())).accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andReturn().getResponse().getContentAsString();
         final CalculusResult result = mapper.readerFor(CalculusResult.class).readValue(body);
         assertNotNull(result.getMessage());
     }
 
     @Test
-    public void nullExpr(){
+    public void nullExpr() {
         final CalcService calcService = wac.getBean(CalcService.class);
         assertNull(calcService.evaluateExpression(null));
     }
