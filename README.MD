@@ -17,8 +17,14 @@
 
 Default scaling==14, should be JavaScript-compatible
 
-http://localhost:8080/calculus?query=MiAqICgyMy8oMyozKSktIDIzICogKDIqMyk=
+
+
+[Local deployment](http://localhost:8080/calculus?query=MiAqICgyMy8oMyozKSktIDIzICogKDIqMyk=)
+
+[Heroku deployment](https://futurice-calculus.herokuapp.com/calculus?query=MiAqICgyMy8oMyozKSktIDIzICogKDIqMyk=)
 
 Scaling to 2 decimals
  
-http://localhost:8080/calculus?query=MiAqICgyMy8oMyozKSktIDIzICogKDIqMyk=&scale=2
+[Local deployment](http://localhost:8080/calculus?query=MiAqICgyMy8oMyozKSktIDIzICogKDIqMyk=&scale=2)
+
+[Heroku deployment](https://futurice-calculus.herokuapp.com/calculus?query=MiAqICgyMy8oMyozKSktIDIzICogKDIqMyk=&scale=2)
