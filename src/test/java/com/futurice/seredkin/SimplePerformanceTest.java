@@ -1,5 +1,7 @@
 package com.futurice.seredkin;
 
+import com.futurice.seredkin.api.ShuntingYardTest;
+import junit.framework.AssertionFailedError;
 import lombok.extern.log4j.Log4j;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Before;
@@ -45,15 +47,15 @@ public class SimplePerformanceTest {
     public void performanceTest() throws Exception {
         int threads = 20;
         int samples = 10000;
-        int desiredFPS = 50;
-        long timeOutSec = (long)samples*threads/desiredFPS;
+        int desiredFPS = 50;//minimal samples per second per thread
+        long timeOutSec = (long)samples*threads/desiredFPS*1000;
         final LongAdder counter = new LongAdder();
         CompletableFuture[] parallel = new CompletableFuture[threads];
-        testData = new ArrayList<>(CalculusTest.genTestData());
+        testData = new ArrayList<>(ShuntingYardTest.genTestData());
         for (int i = 0; i < threads; i++) {
             CompletableFuture<Integer> sequential = CompletableFuture.supplyAsync(() -> execFunction(counter));
             for (int j = 0; j < samples; j++) {
-                    sequential.thenCombine(sequential, (integer, integet1) -> execFunction(counter));
+                    sequential.thenCombine(sequential, (int0, int1) -> execFunction(counter));
             }
             parallel[i] = sequential;
         }
@@ -64,6 +66,8 @@ public class SimplePerformanceTest {
                 .get(timeOutSec, TimeUnit.SECONDS);
         sw.stop();
         log.info("Performance result: "+counter.intValue()+" samples in "+sw.getLastTaskTimeMillis()+"ms");
+        if(sw.getLastTaskTimeMillis()>timeOutSec)
+            throw new AssertionFailedError("Performance test timed out");
     }
 
     private Integer execFunction(LongAdder counter) {

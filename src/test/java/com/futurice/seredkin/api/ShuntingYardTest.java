@@ -1,28 +1,30 @@
-package com.futurice.seredkin;
+package com.futurice.seredkin.api;
 
-import com.futurice.seredkin.service.CalcServiceShuntYardImpl;
-import com.futurice.seredkin.service.ShuntingYard;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Test;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayDeque;
 import java.util.Queue;
 
 import static org.junit.Assert.assertEquals;
 
-public class CalculusTest {
+@SpringBootTest
+public class ShuntingYardTest {
+
 
     @Test
     public void testPostfix() {
+        ShuntingYard shuntingYard = new ShuntingYard();
         Queue<Pair<String, String>> testData = genTestData();
 
         testData.forEach(p -> {
-            final String infix = CalcServiceShuntYardImpl.formatExpression(p.getLeft());
-            final String postfix = ShuntingYard.toPostfix(infix);
+            final String infix = shuntingYard.formatExpression(p.getLeft());
+            final String postfix = shuntingYard.toPostfix(infix);
             System.out.println("ex =\t" + infix + "\t" + postfix);
             assertEquals(p.getRight(), postfix);
-            System.out.println("result\t" + ShuntingYard.calcStack(postfix));
+            System.out.println("result\t" + shuntingYard.calcStack(postfix));
         });
 
     }

@@ -1,7 +1,7 @@
 package com.futurice.seredkin.controller;
 
-import com.futurice.seredkin.data.CalculusException;
-import com.futurice.seredkin.data.CalculusResult;
+import com.futurice.seredkin.api.CalculusException;
+import com.futurice.seredkin.api.CalculusResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;

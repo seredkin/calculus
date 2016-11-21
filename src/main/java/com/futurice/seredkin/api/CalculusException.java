@@ -1,4 +1,4 @@
-package com.futurice.seredkin.data;
+package com.futurice.seredkin.api;
 
 public class CalculusException extends RuntimeException {
 

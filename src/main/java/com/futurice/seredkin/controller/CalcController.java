@@ -1,6 +1,6 @@
 package com.futurice.seredkin.controller;
 
-import com.futurice.seredkin.data.CalculusResult;
+import com.futurice.seredkin.api.CalculusResult;
 import com.futurice.seredkin.service.CalcService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

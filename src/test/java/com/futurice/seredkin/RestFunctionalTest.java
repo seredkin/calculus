@@ -1,7 +1,7 @@
 package com.futurice.seredkin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.futurice.seredkin.data.CalculusResult;
+import com.futurice.seredkin.api.CalculusResult;
 import com.futurice.seredkin.service.CalcService;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,9 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.math.BigDecimal;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -70,13 +68,16 @@ public class RestFunctionalTest {
 
     @Test
     public void faultyExpr() throws Exception {
-        String ex = "2 * (23/(3*3))- 23 * (2*3";
-        String body = this.mockMvc.perform(get("/calculus?query=" + Base64Utils.encodeToUrlSafeString(ex.getBytes())).accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isBadRequest())
-                .andReturn().getResponse().getContentAsString();
-        final CalculusResult result = mapper.readerFor(CalculusResult.class).readValue(body);
-        assertNotNull(result.getMessage());
+        String[] expr = {"2 * (23/(3*3))- 23 * (2*3", "2 * (23ac/(3*3))- 23 * (2*3"};
+        for (String ex : expr) {
+
+            String body = this.mockMvc.perform(get("/calculus?query=" + Base64Utils.encodeToUrlSafeString(ex.getBytes())).accept(MediaType.APPLICATION_JSON))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andReturn().getResponse().getContentAsString();
+            final CalculusResult result = mapper.readerFor(CalculusResult.class).readValue(body);
+            assertNotNull(result.getMessage());
+        }
     }
 
     @Test(expected = NullPointerException.class)
