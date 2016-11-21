@@ -46,8 +46,8 @@ public class SimplePerformanceTest {
     @Test
     public void performanceTest() throws Exception {
         int threads = 20;
-        int samples = 10000;
-        int desiredFPS = 5000;//minimal samples per second per thread
+        int samples = 1000;
+        int desiredFPS = 5000;//minimal samples per second
         long timeOutmSec = (long)samples*threads/desiredFPS*1000;
         final LongAdder counter = new LongAdder();
         final StopWatch sw = new StopWatch();

@@ -15,7 +15,6 @@ public class ShuntingYard {
     final static Pattern spacePattern = Pattern.compile("\\s+");
     final static Pattern outerSpacePattern = Pattern.compile("^\\s+|\\s+$");
 
-
     String formatExpression(String ex) {
         ex = digitPattern.matcher(ex).replaceAll(" $1 ");
         ex = operandPattern.matcher(ex).replaceAll(" $1 ");
@@ -29,15 +28,15 @@ public class ShuntingYard {
         return calcStack(toPostfix(formatExpression(infixExpr)));
     }
 
-    private boolean isUpper(String op, String sub) {
-        return operands.containsKey(sub) && operands.get(sub).compareTo(operands.get(op)) >= 0;
+    private boolean isUpper(String left, String right) {
+        return operands.containsKey(right) && operands.get(right).compareTo(operands.get(left)) >= 0;
     }
 
     String toPostfix(String infix) {
         StringBuilder out = new StringBuilder();
         Deque<String> stack = new LinkedList<>();
 
-        for (String token : infix.split("\\s")) {
+        for (String token : spacePattern.split(infix)) {
             // operator
             if (operands.containsKey(token)) {
                 while (!stack.isEmpty() && isUpper(token, stack.peek()))
@@ -62,7 +61,7 @@ public class ShuntingYard {
 
     BigDecimal calcStack(String postfix) {
         Deque<BigDecimal> stack = new LinkedList<>();
-        for (String s : postfix.split("\\s")) {
+        for (String s : spacePattern.split(postfix)) {
             final Operand<BigDecimal> operand = operands.get(s);
             if (operand == null) {
                 if (digitPattern.matcher(s).matches())

@@ -26,5 +26,4 @@ class ErrorHandler{
         return new CalculusResult(ex.getMessage());
     }
 
-
 }

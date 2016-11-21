@@ -12,11 +12,11 @@ public class CalculusResult {
     private String message;
     private BigDecimal result;
 
-    public CalculusResult(BigDecimal result){
+    public CalculusResult(BigDecimal result) {
         this.result = result;
     }
 
-    public CalculusResult(String errorMessage){
+    public CalculusResult(String errorMessage) {
         this.error = true;
         this.message = errorMessage;
     }
