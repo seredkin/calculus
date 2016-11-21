@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 
-@RestController //@CacheConfig(cacheNames = "calc")
+@RestController
 public class CalcController {
 
     @Autowired CalcService calcService;
