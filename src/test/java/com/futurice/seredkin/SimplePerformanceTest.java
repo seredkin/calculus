@@ -47,9 +47,11 @@ public class SimplePerformanceTest {
     public void performanceTest() throws Exception {
         int threads = 20;
         int samples = 10000;
-        int desiredFPS = 50;//minimal samples per second per thread
-        long timeOutSec = (long)samples*threads/desiredFPS*1000;
+        int desiredFPS = 5000;//minimal samples per second per thread
+        long timeOutmSec = (long)samples*threads/desiredFPS*1000;
         final LongAdder counter = new LongAdder();
+        final StopWatch sw = new StopWatch();
+        sw.start();
         CompletableFuture[] parallel = new CompletableFuture[threads];
         testData = new ArrayList<>(ShuntingYardTest.genTestData());
         for (int i = 0; i < threads; i++) {
@@ -59,14 +61,12 @@ public class SimplePerformanceTest {
             }
             parallel[i] = sequential;
         }
-        StopWatch sw = new StopWatch();
-        sw.start();
         CompletableFuture.allOf(parallel)
                 .exceptionally(throwable -> {log.error(throwable); return null;})
-                .get(timeOutSec, TimeUnit.SECONDS);
+                .get(timeOutmSec, TimeUnit.SECONDS);
         sw.stop();
-        log.info("Performance result: "+counter.intValue()+" samples in "+sw.getLastTaskTimeMillis()+"ms");
-        if(sw.getLastTaskTimeMillis()>timeOutSec)
+        log.info("Performance result: "+counter.intValue()+" samples in "+sw.getTotalTimeMillis()+"ms");
+        if(sw.getLastTaskTimeMillis()>timeOutmSec)
             throw new AssertionFailedError("Performance test timed out");
     }
 
