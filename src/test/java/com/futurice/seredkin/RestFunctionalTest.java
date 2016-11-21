@@ -100,7 +100,7 @@ public class RestFunctionalTest {
     @Test(expected = NullPointerException.class)
     public void npeFromService() {
         final CalcService calcService = wac.getBean(CalcService.class);
-        assertNull(calcService.evaluateExpression(null));
+        assertNull(calcService.evaluateExpression(null, 14, BigDecimal.ROUND_UP));
     }
 
 }

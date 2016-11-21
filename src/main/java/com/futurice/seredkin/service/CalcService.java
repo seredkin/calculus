@@ -4,5 +4,5 @@ import java.math.BigDecimal;
 
 public interface CalcService {
 
-    BigDecimal evaluateExpression(String ex);
+    BigDecimal evaluateExpression(String ex, int scale, int roundingMode);
 }
