@@ -8,8 +8,10 @@ import java.math.BigDecimal;
 @Service
 class CalcServiceShuntingYardImpl implements CalcService {
 
+    private final ShuntingYard shuntingYard = new ShuntingYard();
+
     @Override public BigDecimal evaluateExpression(String infix) {
-        return new ShuntingYard().infixToPostfix(infix);
+        return shuntingYard.infixToPostfix(infix);
     }
 
 }

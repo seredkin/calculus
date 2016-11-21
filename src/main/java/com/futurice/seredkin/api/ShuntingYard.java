@@ -1,21 +1,27 @@
 package com.futurice.seredkin.api;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
 import java.math.BigDecimal;
 import java.util.Deque;
 import java.util.LinkedList;
+import java.util.regex.Pattern;
 
-import static com.futurice.seredkin.api.Operator.OPS;
+import static com.futurice.seredkin.api.Operand.operands;
 
 public class ShuntingYard {
 
+    final static Pattern digitPattern = Pattern.compile("(\\-?\\d*\\.?\\d+)");
+    final static Pattern operandPattern = Pattern.compile("([\\+\\*/^])");
+    final static Pattern bracketPattern = Pattern.compile("([\\(\\)])");
+    final static Pattern spacePattern = Pattern.compile("\\s+");
+    final static Pattern outerSpacePattern = Pattern.compile("^\\s+|\\s+$");
+
+
     String formatExpression(String ex) {
-        ex = ex.replaceAll("(\\-?\\d*\\.?\\d+)", " $1 ").replaceAll("([\\+\\*/^])", " $1 ");
-        ex = ex.replaceAll("([\\(\\)])", " $1 ");
-        ex = ex.replaceAll("\\s+", " ");
-        //ex = ex.replaceAll("\\(\\s", "(").replaceAll("\\s\\)", ")");
-        ex = ex.replaceAll("^\\s+|\\s+$", "");//equal to ex.trim()
+        ex = digitPattern.matcher(ex).replaceAll(" $1 ");
+        ex = operandPattern.matcher(ex).replaceAll(" $1 ");
+        ex = bracketPattern.matcher(ex).replaceAll(" $1 ");
+        ex = spacePattern.matcher(ex).replaceAll(" ");
+        ex = outerSpacePattern.matcher(ex).replaceAll("");
         return ex;
     }
 
@@ -24,7 +30,7 @@ public class ShuntingYard {
     }
 
     private boolean isUpper(String op, String sub) {
-        return OPS.containsKey(sub) && OPS.get(sub).compareTo(OPS.get(op))>=0;
+        return operands.containsKey(sub) && operands.get(sub).compareTo(operands.get(op)) >= 0;
     }
 
     String toPostfix(String infix) {
@@ -33,7 +39,7 @@ public class ShuntingYard {
 
         for (String token : infix.split("\\s")) {
             // operator
-            if (OPS.containsKey(token)) {
+            if (operands.containsKey(token)) {
                 while (!stack.isEmpty() && isUpper(token, stack.peek()))
                     out.append(stack.pop()).append(' ');
                 stack.push(token);
@@ -57,16 +63,16 @@ public class ShuntingYard {
     BigDecimal calcStack(String postfix) {
         Deque<BigDecimal> stack = new LinkedList<>();
         for (String s : postfix.split("\\s")) {
-            final com.futurice.seredkin.api.Operator<BigDecimal> operator = OPS.get(s);
-            if (operator == null) {
-                if (NumberUtils.isNumber(s))
-                    stack.push(new BigDecimal(NumberUtils.toDouble(s)));
+            final Operand<BigDecimal> operand = operands.get(s);
+            if (operand == null) {
+                if (digitPattern.matcher(s).matches())
+                    stack.push(new BigDecimal(Double.valueOf(s)));
                 else
                     throw new CalculusException("Unknown literal: " + s);
             } else {
                 final BigDecimal right = stack.pop();
                 final BigDecimal left = stack.pop();
-                stack.push((operator.getFunction().apply(left, right)));
+                stack.push((operand.getFunction().apply(left, right)));
             }
         }
         return stack.pop();
