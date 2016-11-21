@@ -3,6 +3,7 @@ package com.futurice.seredkin;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.futurice.seredkin.api.CalculusResult;
 import com.futurice.seredkin.service.CalcService;
+import lombok.SneakyThrows;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,8 +67,8 @@ public class RestFunctionalTest {
         assertEquals(expectedResult, scaledResult);//
     }
 
-    @Test
-    public void faultyExpr() throws Exception {
+    @Test @SneakyThrows
+    public void faultyExpr() {
         String[] expr = {"2 * (23/(3*3))- 23 * (2*3", "2 * (23ac/(3*3))- 23 * (2*3"};
         for (String ex : expr) {
 
@@ -80,8 +81,24 @@ public class RestFunctionalTest {
         }
     }
 
+    @Test @SneakyThrows
+    public void dummyQuery() {
+        this.mockMvc.perform(get("/calculus?dummy=234254").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andReturn();
+
+    }
+
+    @Test @SneakyThrows
+    public void emptyQuery() {
+        this.mockMvc.perform(get("/calculus").accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is5xxServerError())
+                .andReturn();
+
+    }
+
     @Test(expected = NullPointerException.class)
-    public void nullExpr() {
+    public void npeFromService() {
         final CalcService calcService = wac.getBean(CalcService.class);
         assertNull(calcService.evaluateExpression(null));
     }

@@ -63,12 +63,11 @@ public class ShuntingYard {
                     stack.push(new BigDecimal(NumberUtils.toDouble(s)));
                 else
                     throw new CalculusException("Unknown literal: " + s);
-            } else if (operator.getFunction() != null) {
+            } else {
                 final BigDecimal right = stack.pop();
                 final BigDecimal left = stack.pop();
                 stack.push((operator.getFunction().apply(left, right)));
-            } else
-                throw new CalculusException("Operator without a defined function: " + s);
+            }
         }
         return stack.pop();
     }
