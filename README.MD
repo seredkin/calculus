@@ -1,6 +1,8 @@
 ### Get sources & Build with Maven
 ``` git clone https://github.com/seredkin/calculus.git ```
+
 ``` cd calculus ```
+
 ``` mvn package ```
 
 ### Run from Maven
